@@ -44,7 +44,7 @@ class TokenRules:
             'AND', 'OR', 'NOT',
             'BITWISE_AND', 'BITWISE_OR', 'BITWISE_XOR', 'LSHIFT', 'RSHIFT', 'BITWISE_NOT',
             'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'LBRACKET', 'RBRACKET', 'COMMA', 'SEMICOLON', 'NEWLINE',
-            'INTEGER', 'FLOAT_N', 'STRING', 'ID', 'INCLUDE', 'DEFINE',
+            'INTEGER', 'FLOAT_N', 'STRING', 'ID', 'INCLUDE', 'DEFINE', 'MAIN',
             'TERNARY', 'ELLIPSIS', 'ARROW', 'DOT', 'HASH', 'DOUBLEHASH'
         ] + list(self.reserved.values())
 
@@ -62,6 +62,11 @@ class TokenRules:
 
     # Ignora espaços em branco e tabulações
     t_ignore = ' \t\n'
+
+    # Define o token de função principal
+    def t_MAIN(self, t):
+        r'main'
+        return t
 
     # Define o identificador
     def t_ID(self, t):
