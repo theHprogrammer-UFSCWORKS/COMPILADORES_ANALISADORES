@@ -44,7 +44,7 @@ class TokenRules:
             'AND', 'OR', 'NOT',
             'BITWISE_AND', 'BITWISE_OR', 'BITWISE_XOR', 'LSHIFT', 'RSHIFT', 'BITWISE_NOT',
             'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE', 'LBRACKET', 'RBRACKET', 'COMMA', 'SEMICOLON', 'NEWLINE',
-            'INTEGER', 'FLOAT_N', 'STRING', 'ID', 'INCLUDE', 'DEFINE', 'MAIN',
+            'INTEGER', 'FLOAT_N', 'STRING', 'ID', 'INCLUDE', 'DEFINE', 'MAIN', 'LIBRARY',
             'TERNARY', 'ELLIPSIS', 'ARROW', 'DOT', 'HASH', 'DOUBLEHASH'
         ] + list(self.reserved.values())
 
@@ -78,6 +78,11 @@ class TokenRules:
     def t_FLOAT_N(self, t):
         r'((\d*\.\d+)(E[\+-]?\d+)?|([1-9]\d*E[\+-]?\d+))'
         t.value = float(t.value)
+        return t
+
+    # Define o token de biblioteca
+    def t_LIBRARY(self, t):
+        r'["<][a-zA-Z_][a-zA-Z0-9_]*\.h[">]'
         return t
 
     # Define o token de string entre aspas duplas
