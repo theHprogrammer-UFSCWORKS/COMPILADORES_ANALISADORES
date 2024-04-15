@@ -24,12 +24,17 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Executando o Analisador Léxico
+## Executando o Analisador Léxico no Terminal
 Para executar o analisador léxico em um arquivo C:
 
 ```bash
 python main.py caminho/para/arquivo.c
 ```
+
+Caso, haja a necessidade de alterar os arquivos `c`, eles devem ser definidos dentro do diretório `tests`.
+
+## Executando o Analisador Léxico pela IDE
+Para executar o analisador léxico em um arquivo C diretamente da IDE, use o arquivo `estrutura_c.py`.
 
 ## Testes
 Para executar os testes unitários, use o seguinte comando:
