@@ -37,7 +37,7 @@ class TokenRules:
         }
         
         self.tokens = [
-            'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'POWER', 'MOD',
+            'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'POWER', 'MOD', 'INCREMENT', 'DECREMENT',
             'LT', 'LE', 'GT', 'GE', 'NE', 'COMPARATOR',
             'EQUALS', 'MOD_ASSIGN', 'PLUS_ASSIGN', 'MINUS_ASSIGN', 'TIMES_ASSIGN', 'DIVIDE_ASSIGN',
             'AND_ASSIGN', 'OR_ASSIGN', 'XOR_ASSIGN', 'LSHIFT_ASSIGN', 'RSHIFT_ASSIGN',
@@ -82,7 +82,7 @@ class TokenRules:
 
     # Define o token de biblioteca
     def t_LIBRARY(self, t):
-        r'["<][a-zA-Z_][a-zA-Z0-9_]*\.h[">]'
+        r'[<][a-zA-Z_][a-zA-Z0-9_]*\.h[>]'
         return t
 
     # Define o token de string entre aspas duplas
@@ -102,6 +102,8 @@ class TokenRules:
 
     # Definições simples de tokens
     # Operadores Aritméticos
+    t_INCREMENT = r'\+\+'
+    t_DECREMENT = r'--'
     t_PLUS = r'\+'
     t_MINUS = r'-'
     t_TIMES = r'\*'
