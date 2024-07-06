@@ -12,4 +12,4 @@ float babu = 2.3;
 while(x>3){
     printf();
 }
-};
+}

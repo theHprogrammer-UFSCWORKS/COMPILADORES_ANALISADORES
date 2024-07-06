@@ -13,5 +13,8 @@ int main() {
     if (result > 0) {
         printMessage();
     }
+    else {
+        printf("Result is less than or equal to 0\n");
+    }
     return 0;
 }
