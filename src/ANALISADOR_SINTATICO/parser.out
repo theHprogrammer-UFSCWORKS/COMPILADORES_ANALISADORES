@@ -1,0 +1,306 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    AND_ASSIGN
+    ARROW
+    BITWISE_NOT
+    DIVIDE_ASSIGN
+    DOUBLEHASH
+    ELLIPSIS
+    ENUM
+    GOTO
+    LBRACKET
+    LSHIFT_ASSIGN
+    MINUS_ASSIGN
+    MOD_ASSIGN
+    NEWLINE
+    NOT
+    OR_ASSIGN
+    PLUS_ASSIGN
+    POWER
+    RBRACKET
+    RSHIFT_ASSIGN
+    SIZEOF
+    TERNARY
+    TIMES_ASSIGN
+    UNION
+    XOR_ASSIGN
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> optional_preprocessor_directives optional_declaration_list function_list
+Rule 2     optional_preprocessor_directives -> preprocessor_directive_list
+Rule 3     optional_preprocessor_directives -> empty
+Rule 4     preprocessor_directive_list -> preprocessor_directive
+Rule 5     preprocessor_directive_list -> preprocessor_directive_list preprocessor_directive
+Rule 6     preprocessor_directive -> include_directive
+Rule 7     preprocessor_directive -> define_directive
+Rule 8     include_directive -> HASH INCLUDE LIBRARY
+Rule 9     define_directive -> HASH DEFINE ID expression
+Rule 10    define_directive -> HASH DEFINE ID
+Rule 11    optional_declaration_list -> declaration_list
+Rule 12    optional_declaration_list -> empty
+Rule 13    declaration_list -> declaration_list declaration
+Rule 14    function_list -> function
+Rule 15    function_list -> function_list function
+Rule 16    function -> main_function
+Rule 17    function -> type_specifier ID LPAREN parameter_list RPAREN compound_statement
+Rule 18    function -> type_specifier ID LPAREN RPAREN compound_statement
+Rule 19    main_function -> type_specifier MAIN LPAREN RPAREN compound_statement
+Rule 20    parameter_list -> parameter
+Rule 21    parameter_list -> parameter_list COMMA parameter
+Rule 22    parameter_list -> empty
+Rule 23    parameter -> type_specifier ID
+Rule 24    compound_statement -> LBRACE statement_list RBRACE
+Rule 25    statement_list -> statement
+Rule 26    statement_list -> statement_list statement
+Rule 27    statement -> declaration
+Rule 28    statement -> assignment
+Rule 29    statement -> if_statement
+Rule 30    statement -> while_statement
+Rule 31    statement -> return_statement
+Rule 32    statement -> compound_statement
+Rule 33    statement -> function_call SEMICOLON
+Rule 34    statement -> break_statement
+Rule 35    statement -> continue_statement
+Rule 36    statement -> switch_statement
+Rule 37    statement -> do_while_statement
+Rule 38    statement -> for_statement
+Rule 39    statement -> expression SEMICOLON
+Rule 40    declaration -> type_specifier init_declarator_list SEMICOLON
+Rule 41    declaration -> typedef_declaration
+Rule 42    declaration -> struct_declaration
+Rule 43    typedef_declaration -> TYPEDEF struct_declaration
+Rule 44    struct_declaration -> STRUCT optional_id LBRACE struct_members RBRACE ID SEMICOLON
+Rule 45    struct_members -> struct_member
+Rule 46    struct_members -> struct_members struct_member
+Rule 47    struct_member -> type_specifier ID SEMICOLON
+Rule 48    optional_id -> ID
+Rule 49    optional_id -> empty
+Rule 50    init_declarator_list -> init_declarator
+Rule 51    init_declarator_list -> init_declarator_list COMMA init_declarator
+Rule 52    init_declarator -> ID
+Rule 53    init_declarator -> ID EQUALS expression
+Rule 54    init_declarator -> ID EQUALS LBRACE initializer_list RBRACE
+Rule 55    initializer_list -> expression
+Rule 56    initializer_list -> initializer_list COMMA expression
+Rule 57    type_specifier -> non_empty_pre_type_specifier base_type
+Rule 58    type_specifier -> non_empty_pre_type_specifier ID
+Rule 59    type_specifier -> ID
+Rule 60    non_empty_pre_type_specifier -> pre_type_specifier
+Rule 61    base_type -> INT
+Rule 62    base_type -> CHAR
+Rule 63    base_type -> FLOAT
+Rule 64    base_type -> DOUBLE
+Rule 65    base_type -> VOID
+Rule 66    pre_type_specifier -> CONST
+Rule 67    pre_type_specifier -> VOLATILE
+Rule 68    pre_type_specifier -> AUTO
+Rule 69    pre_type_specifier -> REGISTER
+Rule 70    pre_type_specifier -> STATIC
+Rule 71    pre_type_specifier -> EXTERN
+Rule 72    pre_type_specifier -> SIGNED
+Rule 73    pre_type_specifier -> UNSIGNED
+Rule 74    pre_type_specifier -> SHORT
+Rule 75    pre_type_specifier -> LONG
+Rule 76    pre_type_specifier -> empty
+Rule 77    assignment -> ID EQUALS expression SEMICOLON
+Rule 78    expression -> term
+Rule 79    expression -> expression PLUS term
+Rule 80    expression -> expression MINUS term
+Rule 81    expression -> expression LT term
+Rule 82    expression -> expression LE term
+Rule 83    expression -> expression GT term
+Rule 84    expression -> expression GE term
+Rule 85    expression -> expression NE term
+Rule 86    expression -> expression COMPARATOR term
+Rule 87    expression -> expression BITWISE_AND term
+Rule 88    expression -> expression BITWISE_OR term
+Rule 89    expression -> expression BITWISE_XOR term
+Rule 90    expression -> expression AND term
+Rule 91    expression -> expression OR term
+Rule 92    expression -> expression DOT ID
+Rule 93    expression -> expression INCREMENT
+Rule 94    expression -> expression DECREMENT
+Rule 95    expression -> function_call
+Rule 96    term -> factor
+Rule 97    term -> term TIMES factor
+Rule 98    term -> term DIVIDE factor
+Rule 99    term -> term MOD factor
+Rule 100   term -> term LSHIFT factor
+Rule 101   term -> term RSHIFT factor
+Rule 102   factor -> INTEGER
+Rule 103   factor -> FLOAT_N
+Rule 104   factor -> STRING
+Rule 105   factor -> ID
+Rule 106   factor -> ID INCREMENT
+Rule 107   factor -> ID DECREMENT
+Rule 108   factor -> LPAREN expression RPAREN
+Rule 109   if_statement -> IF factor statement
+Rule 110   if_statement -> IF factor statement ELSE statement
+Rule 111   while_statement -> WHILE factor statement
+Rule 112   do_while_statement -> DO statement WHILE factor SEMICOLON
+Rule 113   for_statement -> FOR LPAREN declaration expression SEMICOLON expression RPAREN statement
+Rule 114   for_statement -> FOR LPAREN expression SEMICOLON expression SEMICOLON expression RPAREN statement
+Rule 115   switch_statement -> SWITCH factor LBRACE case_list default_case RBRACE
+Rule 116   case_list -> case
+Rule 117   case_list -> case_list case
+Rule 118   case_list -> empty
+Rule 119   case -> CASE expression COLON statement_list
+Rule 120   default_case -> DEFAULT COLON statement_list
+Rule 121   default_case -> empty
+Rule 122   break_statement -> BREAK SEMICOLON
+Rule 123   continue_statement -> CONTINUE SEMICOLON
+Rule 124   return_statement -> RETURN expression SEMICOLON
+Rule 125   function_call -> ID LPAREN RPAREN
+Rule 126   function_call -> ID LPAREN argument_list RPAREN
+Rule 127   argument_list -> expression
+Rule 128   argument_list -> argument_list COMMA expression
+Rule 129   empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 90
+AND_ASSIGN           : 
+ARROW                : 
+AUTO                 : 68
+BITWISE_AND          : 87
+BITWISE_NOT          : 
+BITWISE_OR           : 88
+BITWISE_XOR          : 89
+BREAK                : 122
+CASE                 : 119
+CHAR                 : 62
+COLON                : 119 120
+COMMA                : 21 51 56 128
+COMPARATOR           : 86
+CONST                : 66
+CONTINUE             : 123
+DECREMENT            : 94 107
+DEFAULT              : 120
+DEFINE               : 9 10
+DIVIDE               : 98
+DIVIDE_ASSIGN        : 
+DO                   : 112
+DOT                  : 92
+DOUBLE               : 64
+DOUBLEHASH           : 
+ELLIPSIS             : 
+ELSE                 : 110
+ENUM                 : 
+EQUALS               : 53 54 77
+EXTERN               : 71
+FLOAT                : 63
+FLOAT_N              : 103
+FOR                  : 113 114
+GE                   : 84
+GOTO                 : 
+GT                   : 83
+HASH                 : 8 9 10
+ID                   : 9 10 17 18 23 44 47 48 52 53 54 58 59 77 92 105 106 107 125 126
+IF                   : 109 110
+INCLUDE              : 8
+INCREMENT            : 93 106
+INT                  : 61
+INTEGER              : 102
+LBRACE               : 24 44 54 115
+LBRACKET             : 
+LE                   : 82
+LIBRARY              : 8
+LONG                 : 75
+LPAREN               : 17 18 19 108 113 114 125 126
+LSHIFT               : 100
+LSHIFT_ASSIGN        : 
+LT                   : 81
+MAIN                 : 19
+MINUS                : 80
+MINUS_ASSIGN         : 
+MOD                  : 99
+MOD_ASSIGN           : 
+NE                   : 85
+NEWLINE              : 
+NOT                  : 
+OR                   : 91
+OR_ASSIGN            : 
+PLUS                 : 79
+PLUS_ASSIGN          : 
+POWER                : 
+RBRACE               : 24 44 54 115
+RBRACKET             : 
+REGISTER             : 69
+RETURN               : 124
+RPAREN               : 17 18 19 108 113 114 125 126
+RSHIFT               : 101
+RSHIFT_ASSIGN        : 
+SEMICOLON            : 33 39 40 44 47 77 112 113 114 114 122 123 124
+SHORT                : 74
+SIGNED               : 72
+SIZEOF               : 
+STATIC               : 70
+STRING               : 104
+STRUCT               : 44
+SWITCH               : 115
+TERNARY              : 
+TIMES                : 97
+TIMES_ASSIGN         : 
+TYPEDEF              : 43
+UNION                : 
+UNSIGNED             : 73
+VOID                 : 65
+VOLATILE             : 67
+WHILE                : 111 112
+XOR_ASSIGN           : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+argument_list        : 126 128
+assignment           : 28
+base_type            : 57
+break_statement      : 34
+case                 : 116 117
+case_list            : 115 117
+compound_statement   : 17 18 19 32
+continue_statement   : 35
+declaration          : 13 27 113
+declaration_list     : 11 13
+default_case         : 115
+define_directive     : 7
+do_while_statement   : 37
+empty                : 3 12 22 49 76 118 121
+expression           : 9 39 53 55 56 77 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 108 113 113 114 114 114 119 124 127 128
+factor               : 96 97 98 99 100 101 109 110 111 112 115
+for_statement        : 38
+function             : 14 15
+function_call        : 33 95
+function_list        : 1 15
+if_statement         : 29
+include_directive    : 6
+init_declarator      : 50 51
+init_declarator_list : 40 51
+initializer_list     : 54 56
+main_function        : 16
+non_empty_pre_type_specifier : 57 58
+optional_declaration_list : 1
+optional_id          : 44
+optional_preprocessor_directives : 1
+parameter            : 20 21
+parameter_list       : 17 21
+pre_type_specifier   : 60
+preprocessor_directive : 4 5
+preprocessor_directive_list : 2 5
+program              : 0
+return_statement     : 31
+statement            : 25 26 109 110 110 111 112 113 114
+statement_list       : 24 26 119 120
+struct_declaration   : 42 43
+struct_member        : 45 46
+struct_members       : 44 46
+switch_statement     : 36
+term                 : 78 79 80 81 82 83 84 85 86 87 88 89 90 91 97 98 99 100 101
+type_specifier       : 17 18 19 23 40 47
+typedef_declaration  : 41
+while_statement      : 30
+
