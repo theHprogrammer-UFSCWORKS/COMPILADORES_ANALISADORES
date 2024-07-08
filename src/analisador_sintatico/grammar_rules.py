@@ -1,4 +1,3 @@
-from ..analisador_semantico.semantic_rules import SymbolTable
 from ..analisador_lexico.lexer import Lexer
 
 class GrammarRules:
@@ -21,15 +20,11 @@ class GrammarRules:
     )
 
     def __init__(self):
-        self.symbol_table = SymbolTable()
-        self.current_struct = None
-        
-        print("Symbol Table initialized.")
+        pass
 
     def p_program(self, p):
         '''program : optional_preprocessor_directives optional_declaration_list function_list'''
         print("program recognized")
-        print(self.symbol_table)
 
     def p_optional_preprocessor_directives(self, p):
         '''optional_preprocessor_directives : preprocessor_directive_list
@@ -77,18 +72,11 @@ class GrammarRules:
         '''function : main_function
                     | type_specifier ID LPAREN parameter_list RPAREN compound_statement
                     | type_specifier ID LPAREN RPAREN compound_statement'''
-        if len(p) == 6 or len(p) == 7:
-            self.symbol_table.add(p[2], p[1], p.lineno(2))
-        self.symbol_table.enter_scope()
         print("function recognized")
-        self.symbol_table.exit_scope()
 
     def p_main_function(self, p):
         '''main_function : type_specifier MAIN LPAREN RPAREN compound_statement'''
-        self.symbol_table.add('main', p[1], p.lineno(2))
-        self.symbol_table.enter_scope()
         print("main function recognized")
-        self.symbol_table.exit_scope()
 
     def p_parameter_list(self, p):
         '''parameter_list : parameter
@@ -98,14 +86,11 @@ class GrammarRules:
 
     def p_parameter(self, p):
         '''parameter : type_specifier ID'''
-        self.symbol_table.add(p[2], p[1], p.lineno(2))
         print("parameter recognized")
 
     def p_compound_statement(self, p):
         'compound_statement : LBRACE statement_list RBRACE'
-        self.symbol_table.enter_scope()
         print("compound statement recognized")
-        self.symbol_table.exit_scope()
 
     def p_statement_list(self, p):
         '''statement_list : statement
@@ -133,9 +118,6 @@ class GrammarRules:
                         | typedef_declaration
                         | struct_declaration'''
         print("declaration recognized")
-        if len(p) == 4:
-            for declarator in p[2]:
-                self.symbol_table.add(declarator['name'], p[1], p.lineno(1))
 
     def p_typedef_declaration(self, p):
         '''typedef_declaration : TYPEDEF struct_declaration'''
@@ -144,51 +126,31 @@ class GrammarRules:
     def p_struct_declaration(self, p):
         '''struct_declaration : STRUCT optional_id LBRACE struct_members RBRACE ID SEMICOLON'''
         print("struct declaration recognized")
-        struct_name = p[6]
-        self.current_struct = struct_name  # Definindo a estrutura atual antes de adicionar os membros
-        self.symbol_table.add(struct_name, 'struct', p.lineno(6))
-        # Processo de membros da estrutura
-        members = p[4]
-        for member in members:
-            self.symbol_table.add_struct_member(struct_name, member['name'], member['type'], member['lineno'])
-        self.current_struct = None  # Redefinindo após adicionar a estrutura
 
     def p_struct_members(self, p):
         '''struct_members : struct_member
                             | struct_members struct_member'''
         print("struct members recognized")
-        if len(p) == 2:
-            p[0] = [p[1]]
-        else:
-            p[0] = p[1] + [p[2]]
 
     def p_struct_member(self, p):
         '''struct_member : type_specifier ID SEMICOLON'''
-        member_info = {'name': p[2], 'type': p[1], 'lineno': p.lineno(2)}
-        p[0] = member_info
         print("struct member recognized")
 
     def p_optional_id(self, p):
         '''optional_id : ID
                         | empty'''
-        p[0] = p[1] if len(p) > 1 else ''
         print("optional id recognized")
 
     def p_init_declarator_list(self, p):
         '''init_declarator_list : init_declarator
                                 | init_declarator_list COMMA init_declarator'''
         print("init declarator list recognized")
-        if len(p) == 2:
-            p[0] = [p[1]]
-        else:
-            p[0] = p[1] + [p[3]]
 
     def p_init_declarator(self, p):
         '''init_declarator : ID
                             | ID EQUALS expression
                             | ID EQUALS LBRACE initializer_list RBRACE'''
         print("init declarator recognized")
-        p[0] = {'name': p[1]}
 
     def p_initializer_list(self, p):
         '''initializer_list : expression
@@ -200,15 +162,12 @@ class GrammarRules:
                         | non_empty_pre_type_specifier ID
                         | ID'''
         if len(p) == 3:
-            p[0] = (p[1] if p[1] else '') + ' ' + p[2]
             print("complex type specifier recognized")
         else:
-            p[0] = p[1]
             print("simple type specifier recognized")
 
     def p_non_empty_pre_type_specifier(self, p):
         '''non_empty_pre_type_specifier : pre_type_specifier'''
-        p[0] = p[1]
         print("non-empty pre-type specifier recognized")
 
     def p_base_type(self, p):
@@ -217,7 +176,6 @@ class GrammarRules:
                         | FLOAT
                         | DOUBLE
                         | VOID'''
-        p[0] = p[1]
         print("base type recognized")
 
     def p_pre_type_specifier(self, p):
@@ -232,20 +190,11 @@ class GrammarRules:
                             | SHORT
                             | LONG
                             | empty'''
-        if p[1] == 'empty':
-            p[0] = ''
-        else:
-            p[0] = p[1]
         print("pre-type specifier or empty recognized")
 
     def p_assignment(self, p):
         'assignment : ID EQUALS expression SEMICOLON'
         print("assignment recognized")
-        var_info = self.symbol_table.lookup(p[1])
-        expr_type = p[3]['type'] if isinstance(p[3], dict) else self.get_type(p[3])
-        if not self.are_types_compatible(var_info['type'], expr_type):
-            raise Exception(f"Type error: Cannot assign '{expr_type}' to variable '{p[1]}' of type '{var_info['type']}'.")
-
 
     def p_expression(self, p):
         '''expression : term
@@ -266,27 +215,6 @@ class GrammarRules:
                         | expression INCREMENT
                         | expression DECREMENT
                         | function_call'''
-        if len(p) == 2:
-            p[0] = p[1]
-        elif len(p) == 3:
-            if p.slice[2].type in ['INCREMENT', 'DECREMENT']:
-                p[0] = self.symbol_table.lookup(p[1])
-        elif len(p) == 4:
-            if p.slice[2].type == 'DOT':
-                base_name = p[1]['name'] if isinstance(p[1], dict) else p[1]
-                member_name = p[3]
-                struct_type = self.symbol_table.lookup(base_name)['type']
-                if struct_type not in self.symbol_table.structs:
-                    raise Exception(f"Error: '{base_name}' is not a struct.")
-                if member_name not in self.symbol_table.structs[struct_type]['members']:
-                    raise Exception(f"Error: '{member_name}' is not a member of struct '{struct_type}'.")
-                p[0] = self.symbol_table.structs[struct_type]['members'][member_name]
-            else:
-                left_type = self.get_type(p[1])
-                right_type = self.get_type(p[3])
-                if not self.are_types_compatible(left_type, right_type):
-                    raise Exception(f"Type error: Cannot perform operation '{p[2]}' between '{left_type}' and '{right_type}'.")
-                p[0] = {'type': left_type}
         print("expression recognized")
 
     def p_term(self, p):
@@ -296,34 +224,7 @@ class GrammarRules:
                 | term MOD factor
                 | term LSHIFT factor
                 | term RSHIFT factor'''
-        if len(p) == 2:
-            p[0] = p[1]
-        elif len(p) == 4:
-            left_type = self.get_type(p[1])
-            right_type = self.get_type(p[3])
-            if not self.are_types_compatible(left_type, right_type):
-                raise Exception(f"Type error: Cannot perform operation '{p[2]}' between '{left_type}' and '{right_type}'.")
-            p[0] = {'type': left_type}
         print("term recognized")
-
-    def get_type(self, operand):
-        if isinstance(operand, dict):
-            return operand['type']
-        elif isinstance(operand, str):
-            var_info = self.symbol_table.lookup(operand)
-            return var_info['type']
-        else:
-            return type(operand).__name__.lower()
-    
-    def are_types_compatible(self, type1, type2):
-    # Tipos são compatíveis se forem iguais ou se ambos forem inteiros (considerando signed e unsigned)
-        if type1 == type2:
-            return True
-        int_types = {'int', 'unsigned int'}
-        if type1 in int_types and type2 in int_types:
-            return True
-        return False
-
 
     def p_factor(self, p):
         '''factor : INTEGER
@@ -333,19 +234,6 @@ class GrammarRules:
                     | ID INCREMENT
                     | ID DECREMENT
                     | LPAREN expression RPAREN'''
-        if len(p) == 2:
-            if p.slice[1].type == 'ID':
-                p[0] = self.symbol_table.lookup(p[1])
-            elif p.slice[1].type == 'INTEGER':
-                p[0] = {'type': 'int'}
-            elif p.slice[1].type == 'FLOAT_N':
-                p[0] = {'type': 'float'}
-            elif p.slice[1].type == 'STRING':
-                p[0] = {'type': 'char'}  # Assumindo que strings são tratadas como arrays de chars
-        elif len(p) == 3:
-            p[0] = self.symbol_table.lookup(p[1])
-        elif len(p) == 4:
-            p[0] = p[2]
         print("factor recognized")
 
     def p_if_statement(self, p):
@@ -400,7 +288,6 @@ class GrammarRules:
     def p_function_call(self, p):
         '''function_call : ID LPAREN RPAREN
                             | ID LPAREN argument_list RPAREN'''
-        self.symbol_table.lookup(p[1])
         print("function call recognized")
 
     def p_argument_list(self, p):
