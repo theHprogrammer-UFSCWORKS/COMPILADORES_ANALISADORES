@@ -308,20 +308,44 @@ class SemanticGrammarRules:
 
     def get_type(self, operand):
         if isinstance(operand, dict):
-            return operand['type']
+            return operand['type'].strip()  # Normaliza removendo espaços em branco
         elif isinstance(operand, str):
             var_info = self.symbol_table.lookup(operand)
-            return var_info['type']
+            return var_info['type'].strip()  # Normaliza removendo espaços em branco
         else:
             return type(operand).__name__.lower()
     
     def are_types_compatible(self, type1, type2):
-    # Tipos são compatíveis se forem iguais ou se ambos forem inteiros (considerando signed e unsigned)
+        # Normaliza removendo espaços em branco
+        type1 = type1.strip()
+        type2 = type2.strip()
+
+        # Tipos são compatíveis se forem exatamente iguais
         if type1 == type2:
             return True
-        int_types = {'int', 'unsigned int'}
+
+        # Definindo conjuntos de tipos compatíveis
+        int_types = {'int', 'unsigned int', 'short', 'unsigned short', 'long', 'unsigned long'}
+        float_types = {'float', 'double', 'long double'}
+        char_types = {'char', 'unsigned char', 'signed char'}
+
+        # Verificação de compatibilidade entre tipos inteiros
         if type1 in int_types and type2 in int_types:
             return True
+
+        # Verificação de compatibilidade entre tipos de ponto flutuante
+        if type1 in float_types and type2 in float_types:
+            return True
+
+        # Verificação de compatibilidade entre tipos de caracteres
+        if type1 in char_types and type2 in char_types:
+            return True
+
+        # Compatibilidade entre tipos inteiros e float (conversão implícita permitida)
+        if (type1 in int_types and type2 in float_types) or (type1 in float_types and type2 in int_types):
+            return True
+
+        # Caso contrário, os tipos não são compatíveis
         return False
 
     def p_factor(self, p):
